@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Download TikTok, Instagram, and YouTube videos with ease. Supports batch URL files, direct links, B-roll auto-muting, and concurrent downloads." />
+  <title>Video Downloader — TikTok, IG &amp; YouTube</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon-wrap">🎬</div>
+        <div>
+          <h1 class="logo-title">Video Downloader</h1>
+          <p class="logo-sub">TikTok, IG &amp; YouTube</p>
+        </div>
+      </div>
+      <div class="status-badge" id="status-badge" data-status="idle">
+        <span class="status-dot"></span>
+        <span id="status-text">Idle</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Download Cards -->
+    <section class="download-section" aria-label="Download options">
+
+      <!-- Text File Card -->
+      <article class="card" id="file-card" aria-label="Download from text file">
+        <div class="card-header">
+          <span class="card-icon" aria-hidden="true">📄</span>
+          <div>
+            <h2 class="card-title">Text File</h2>
+            <p class="card-subtitle">Batch download from a .txt file</p>
+          </div>
+        </div>
+
+        <div class="drop-zone" id="drop-zone" role="button" tabindex="0"
+             aria-label="Drop .txt file here or click to browse">
+          <div class="drop-icon" aria-hidden="true">📁</div>
+          <p class="drop-text">Drag &amp; drop a <strong>.txt</strong> file here</p>
+          <p class="drop-hint">or click to browse</p>
+          <input type="file" id="file-input" accept=".txt" aria-label="Select text file" />
+        </div>
+
+        <div class="file-info hidden" id="file-info">
+          <span class="file-icon" aria-hidden="true">📄</span>
+          <span id="file-name" class="file-name-text">filename.txt</span>
+          <button class="btn-icon-clear" id="clear-file" aria-label="Remove file">✕</button>
+        </div>
+
+        <button class="btn btn-primary" id="btn-download-file" disabled>
+          <span aria-hidden="true">⬇</span> Download from File
+        </button>
+      </article>
+
+      <!-- Divider -->
+      <div class="divider" aria-hidden="true">
+        <div class="divider-line"></div>
+        <span class="divider-label">OR</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- Direct URL Card -->
+      <article class="card" id="url-card" aria-label="Download single URL">
+        <div class="card-header">
+          <span class="card-icon" aria-hidden="true">🔗</span>
+          <div>
+            <h2 class="card-title">Direct URL</h2>
+            <p class="card-subtitle">Download a single video</p>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="url-input">Video URL</label>
+          <input type="url" id="url-input" class="input"
+                 placeholder="https://www.tiktok.com/..." autocomplete="off" />
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="name-input">File Name</label>
+          <input type="text" id="name-input" class="input"
+                 placeholder="e.g. Aroll1 or Broll2" autocomplete="off" />
+        </div>
+
+        <button class="btn btn-primary" id="btn-download-url">
+          <span aria-hidden="true">⬇</span> Download URL
+        </button>
+      </article>
+
+    </section>
+
+    <!-- ── Options ──────────────────────────────────────────────────────── -->
+    <section class="card options-card" aria-label="Download options">
+      <button class="options-toggle" id="options-toggle"
+              aria-expanded="true" aria-controls="options-body">
+        <span class="options-toggle-left">
+          <span aria-hidden="true">⚙</span> Options
+        </span>
+        <span class="toggle-arrow" id="toggle-arrow" aria-hidden="true">▲</span>
+      </button>
+
+      <div class="options-body" id="options-body">
+
+        <!-- Download Folder -->
+        <div class="option-row">
+          <label class="option-label" for="folder-input">
+            <span aria-hidden="true">📂</span> Download Folder
+          </label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="folder-input" class="input input-wide"
+                   placeholder="e.g. C:\Users\YOU\Desktop\Videos" autocomplete="off" />
+            <button class="btn" id="btn-browse-folder" style="white-space: nowrap; padding: 0.5rem 1rem;">
+              Browse...
+            </button>
+          </div>
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="option-row option-row-cols">
+          <label class="checkbox-label" for="muted-check">
+            <input type="checkbox" id="muted-check" checked />
+            <span class="checkmark" aria-hidden="true"></span>
+            <span>🔇 Mute B-roll after download</span>
+          </label>
+          <label class="checkbox-label" for="unmuted-check">
+            <input type="checkbox" id="unmuted-check" checked />
+            <span class="checkmark" aria-hidden="true"></span>
+            <span>🔊 Include Unmuted (A-roll)</span>
+          </label>
+        </div>
+
+        <!-- Duration -->
+        <div class="option-row option-row-cols">
+          <label class="checkbox-label" for="full-length-check">
+            <input type="checkbox" id="full-length-check" />
+            <span class="checkmark" aria-hidden="true"></span>
+            <span>⏱ Full Length (no time limit)</span>
+          </label>
+          <div class="time-row" id="time-row">
+            <label class="option-label-inline" for="time-input">Limit (seconds):</label>
+            <input type="number" id="time-input" class="input input-narrow"
+                   value="60" min="1" max="3600" />
+          </div>
+        </div>
+
+        <!-- Quality -->
+        <div class="option-row" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+          <label class="option-label" for="quality-select">
+            <span aria-hidden="true">📺</span> Video Quality
+          </label>
+          <select id="quality-select" class="input input-wide" style="cursor: pointer;">
+            <option value="best">Best Available</option>
+            <option value="1080">1080p</option>
+            <option value="720" selected>720p</option>
+            <option value="480">480p</option>
+          </select>
+        </div>
+
+        <!-- Concurrent Downloads -->
+        <div class="option-row option-row-slider">
+          <label class="option-label" for="concurrent-slider">
+            <span aria-hidden="true">⚡</span> Concurrent Downloads
+          </label>
+          <div class="slider-group">
+            <input type="range" id="concurrent-slider" min="1" max="10" value="3"
+                   class="slider" aria-label="Number of concurrent downloads" />
+            <span class="slider-value" id="concurrent-value" aria-live="polite">3</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Progress ─────────────────────────────────────────────────────── -->
+    <section class="card progress-card" id="progress-section" aria-label="Download progress">
+      <div class="progress-header">
+        <h3 class="progress-title">
+          <span aria-hidden="true">📊</span> Progress
+        </h3>
+        <button class="btn btn-danger btn-sm" id="btn-stop" disabled
+                aria-label="Stop current download">
+          ⏹ Stop
+        </button>
+      </div>
+
+      <div class="progress-bar-track" role="progressbar"
+           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+           id="progress-track">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+        <div class="progress-bar-shine"></div>
+      </div>
+
+      <div class="progress-stats">
+        <span id="progress-text" aria-live="polite">—</span>
+        <span id="progress-pct" aria-live="polite">0%</span>
+      </div>
+
+      <!-- Log Console -->
+      <div class="log-console" id="log-console" role="log" aria-live="polite" aria-label="Download log">
+        <p class="log-placeholder" id="log-placeholder">Waiting to start...</p>
+      </div>
+
+      <div class="log-actions">
+        <button class="btn-text" id="btn-clear-log" aria-label="Clear log">
+          🗑 Clear log
+        </button>
+        <button class="btn-text" id="btn-scroll-bottom" aria-label="Scroll to bottom">
+          ↓ Scroll to bottom
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Toast ──────────────────────────────────────────────────────────── -->
+  <div class="toast-container" id="toast-container" aria-live="assertive"></div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
